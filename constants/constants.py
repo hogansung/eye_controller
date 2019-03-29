@@ -1,0 +1,24 @@
+import pyautogui as pg
+
+# folder constants
+IMG_FILENAME='{IMG_FOLDER}/frame_{INDEX:04d}.jpg'
+
+# eye action constants
+EYE_AR_LOWER_THRESH = 0.16
+EYE_AR_EYEDN_THRESH = 0.19
+EYE_AR_UPPER_THRESH = 0.26
+EYE_AD_EYEUP_THRESH = 2.25
+EYE_AD_EYELR_THRESH = 2.25
+EYE_MOVEMENT_THRESH = 3
+
+# mouse action constants
+MOUSE_DRAG_DISTANCE = 200
+MOUSE_DRAG_DURATION = 0.3
+MOUSE_SCROLL_DISTANCE = 10
+
+# other constants
+COUNT_DOWN_TIMES = 5
+NUM_IMAGES = 180
+FILLED_GRAY_COLOR = 80
+
+SCREEN_W, SCREEN_H = pg.size()

@@ -1,1 +1,0 @@
-IMG_FILENAME='{IMG_FOLDER}/frame_{INDEX:04d}.jpg'
