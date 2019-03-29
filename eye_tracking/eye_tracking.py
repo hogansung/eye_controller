@@ -156,7 +156,7 @@ def parse_face(detector, predictor, image, label_switch=False):
     rects = detector(gray, 1)
     if not rects:
         print('No face is identified.')
-        return None, 'N'
+        return None, None, None
     rect = rects[0]
 
     # detect different elements on face

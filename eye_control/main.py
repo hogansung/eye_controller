@@ -9,6 +9,7 @@ import cv2
 import dlib
 import os
 import pickle
+import shutil
 import time
 
 
@@ -61,8 +62,13 @@ def online_parsing(model, detector, predictor):
     while True:
         image = vs.read()
         image, l_fx, r_fx = parse_face(detector, predictor, image)
+        if l_fx is None:
+            continue
 
-        status = ActionTypes(model.predict(l_fx + r_fx))
+        data = [
+            x for p in l_fx + r_fx for x in p
+        ]
+        status = ActionTypes(model.predict([data])[0])
 
         # logic of dealing with status
         if status != pre_status:
@@ -74,17 +80,35 @@ def online_parsing(model, detector, predictor):
             count = 1
         count += 1
 
-        print('There are {COUNT} continuous {ACTION}'.format(COUNT=count, ACTION=status))
+        # print('There are {COUNT} continuous {ACTION}'.format(COUNT=count, ACTION=status))
 
         # if the `q` key was pressed, break from the loop
-        key = cv2.imshow('Image', image)
-        if key == ord("q"):
-            break
+        # key = cv2.imshow('Image', image)
+        # if key == ord("q"):
+        #     break
+
+
+def cleanup(username):
+    data_folder_path = 'dat/{USERNAME}/'.format(
+        USERNAME=username,
+    )
+    image_folder_path = 'img/{USERNAME}/'.format(
+        USERNAME=username,
+    )
+    model_path = 'mdl/{USERNAME}.pickle'.format(USERNAME=username)
+    try:
+        # shutil.rmtree(data_folder_path)
+        # shutil.rmtree(image_folder_path)
+        os.remove(model_path)
+    except OSError as e:
+        pass
+
 
 def main():
     print("[INFO] loading facial landmark predictor...")
     detector = dlib.get_frontal_face_detector()
-    predictor = dlib.shape_predictor('../dat/shape_predictor_68_face_landmarks.dat')
+    print(os.getcwd())
+    predictor = dlib.shape_predictor('dat/shape_predictor_68_face_landmarks.dat')
 
     # offline parsing
     # offline_parsing(
@@ -93,13 +117,16 @@ def main():
     # )
 
     # ask the username
-    username = 'hogan'
+    username = 'christine'
     print('Your username is {USERNAME}'.format(USERNAME=username))
+
+    # clean up everything
+    # cleanup(username=username)
 
     model_path = 'mdl/{USERNAME}.pickle'.format(USERNAME=username)
     # if model is cached:
     if os.path.isfile(model_path):
-        model = pickle.load(open('model_path', 'rb'))
+        model = pickle.load(open(model_path, 'rb'))
         print('Your model is fetched from caches.')
     else:
         print('Your model does not exist.')
