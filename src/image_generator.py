@@ -2,7 +2,7 @@ import cv2
 from constants import IMG_FILENAME
 
 FRAME_RATE = 60
-IMG_FOLDER = '../img/eye_rollings'
+IMG_FOLDER = '../img/eyes_up_down'
 
 
 def main():
