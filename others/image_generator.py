@@ -1,4 +1,5 @@
 import cv2
+
 from constants import IMG_FILENAME
 
 FRAME_RATE = 60
@@ -22,7 +23,7 @@ def main():
         # gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
         # Display the resulting frame
-        #cv2.imshow('frame',gray)
+        # cv2.imshow('frame',gray)
 
         img_filename = IMG_FILENAME.format(
             IMG_FOLDER=IMG_FOLDER,

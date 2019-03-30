@@ -1,5 +1,6 @@
 from enum import Enum
 
+
 class ActionTypes(Enum):
     UP = 0
     DOWN = 1

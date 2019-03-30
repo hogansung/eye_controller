@@ -1,8 +1,7 @@
-from imutils import face_utils
-
-import numpy as np
 import cv2
-
+import numpy as np
+from imutils import face_utils
+from scipy.spatial import distance as dist
 
 from constants.constants import *
 
@@ -22,7 +21,7 @@ def locate_lens(roi):
         value=255,
     )
 
-    for i in range(n_row + 2*lens_dia):
+    for i in range(n_row + 2 * lens_dia):
         for j in range(n_col):
             if extended_gray_roi[i][j] == 255:
                 extended_gray_roi[i][j] = FILLED_GRAY_COLOR
@@ -31,7 +30,7 @@ def locate_lens(roi):
         src=extended_gray_roi,
         ddepth=cv2.CV_64F,
         kernel=cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (lens_dia, lens_dia)),
-        anchor=(-1,-1),
+        anchor=(-1, -1),
     )
 
     min_val, _, (min_loc_x, min_loc_y), _ = cv2.minMaxLoc(filtered_roi)
@@ -47,12 +46,12 @@ def parse_eyes(image, eyes_xy_list):
     mask = 255 - np.zeros(image.shape, dtype=np.uint8)
     cv2.fillPoly(mask, np.array([eyes_xy_list]), 0)
     masked_image = cv2.bitwise_or(image, mask)
-    masked_roi = masked_image[eye_y: eye_y+eye_h, eye_x: eye_x + eye_w]
+    masked_roi = masked_image[eye_y: eye_y + eye_h, eye_x: eye_x + eye_w]
 
     # locate each eye
     lens_cx, lens_cy, lens_cr = locate_lens(masked_roi)
 
-    return eye_x, eye_y, eye_w, eye_h, eye_x+lens_cx, eye_y+lens_cy, lens_cr//2
+    return eye_x, eye_y, eye_w, eye_h, eye_x + lens_cx, eye_y + lens_cy, lens_cr // 2
 
 
 def label_lens(
@@ -97,19 +96,19 @@ def label_lens(
     )
 
 
-# def cal_eye_aspect_ratio(eyes_xy_list):
-#     # compute the euclidean distances between two sets of vertical eye landmarks
-#     A = dist.euclidean(eyes_xy_list[1], eyes_xy_list[5])
-#     B = dist.euclidean(eyes_xy_list[2], eyes_xy_list[4])
-#
-#     # compute the euclidean distance between the horizontal eye landmark
-#     C = dist.euclidean(eyes_xy_list[0], eyes_xy_list[3])
-#
-#     # compute the eye aspect ratio
-#     ratio = (A + B) / (2.0 * C)
-#
-#     # return the eye aspect ratio
-#     return ratio
+def cal_eye_aspect_ratio(eye_fx):
+    # compute the euclidean distances between two sets of vertical eye landmarks
+    A = dist.euclidean(eye_fx[2:4], eye_fx[10:12])
+    B = dist.euclidean(eye_fx[4:6], eye_fx[8:10])
+
+    # compute the euclidean distance between the horizontal eye landmark
+    C = dist.euclidean(eye_fx[0:2], eye_fx[6:8])
+
+    # compute the eye aspect ratio
+    ratio = (A + B) / (2.0 * C)
+
+    # return the eye aspect ratio
+    return ratio
 
 
 # def parse_eyes_movement(
@@ -179,7 +178,6 @@ def parse_face(detector, predictor, image, label_switch=False):
     l_fx = [(x - l_lens_cx, y - l_lens_cy) for x, y in l_eye_xy_list]
     r_fx = [(x - r_lens_cx, y - r_lens_cy) for x, y in r_eye_xy_list]
 
-
     # status = parse_eyes_movement(
     #     l_fx,
     #     r_fx,
@@ -193,9 +191,9 @@ def parse_face(detector, predictor, image, label_switch=False):
             lens_cy=l_lens_cy,
             lens_cr=l_lens_cr,
             eyes_xy_list=l_eye_xy_list,
-            color_lens=(255,255,255),
-            color_eyes=(0,255,0),
-            color_cross=(255,0,0),
+            color_lens=(255, 255, 255),
+            color_eyes=(0, 255, 0),
+            color_cross=(255, 0, 0),
         )
         label_lens(
             image=image,

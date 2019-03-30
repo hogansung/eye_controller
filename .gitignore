@@ -1,6 +1,6 @@
 .DS_Store
 .idea/
-dat/
+*/__pycache__/
+eye_control.egg-info
 img/
-mdl/
 others/

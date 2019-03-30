@@ -1,7 +1,8 @@
-from pynput import keyboard
-import pyautogui as pg
 import os
 import sys
+
+import pyautogui as pg
+from pynput import keyboard
 
 MOUSE_DRAG_DISTANCE = 200
 MOUSE_DRAG_DURATION = 0.3
